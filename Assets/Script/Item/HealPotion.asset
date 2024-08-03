@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e03c73b3d6730cd40ab4f46d2f75c392, type: 3}
+  m_Name: HealPotion
+  m_EditorClassIdentifier: 
+  itemName: Heal Potion
+  itemDescription: This potion will allow you to regenerate 2 hearts
+  visual: {fileID: 2120614028, guid: 9edc010b3a8bb63429fea1b76ec09a87, type: 3}
+  itemPrefab: {fileID: 641677271025133465, guid: 57c9f2782e5c8f74a93564bbbb9e027f,
+    type: 3}
+  stackable: 1
+  maxStack: 4
+  type: 1
+  healthAdd: 2
+  damageToEnemyAdd: 0
+  speedAdd: 0
+  canDoubleChot: 0
+  timeOfCounterAdd: 0
+  duration: 0

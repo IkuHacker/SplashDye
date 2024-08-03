@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e03c73b3d6730cd40ab4f46d2f75c392, type: 3}
+  m_Name: PurpleDye
+  m_EditorClassIdentifier: 
+  itemName: Purple Dye
+  itemDescription: This purple dye makes it possible to make purple paint
+  visual: {fileID: -1683812401, guid: d201d8715d38ec04bbfbdf9149c7d3c1, type: 3}
+  itemPrefab: {fileID: 5361248331070676502, guid: 3a3c0f6ee09bbd24dbd991204d006289,
+    type: 3}
+  stackable: 1
+  maxStack: 8
+  type: 0
+  healthAdd: 0
+  damageToEnemyAdd: 0
+  speedAdd: 0
+  canDoubleChot: 0
+  timeOfCounterAdd: 0
+  duration: 0

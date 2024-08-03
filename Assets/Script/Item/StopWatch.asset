@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e03c73b3d6730cd40ab4f46d2f75c392, type: 3}
+  m_Name: StopWatch
+  m_EditorClassIdentifier: 
+  itemName: StopWatch
+  itemDescription: Ce chronometre vous ajoute 30s au timer
+  visual: {fileID: -676487714, guid: 9edc010b3a8bb63429fea1b76ec09a87, type: 3}
+  itemPrefab: {fileID: 2498789119102829617, guid: d053af911780d9942a88160e31796686,
+    type: 3}
+  stackable: 0
+  maxStack: 1
+  type: 1
+  healthAdd: 0
+  damageToEnemyAdd: 0
+  speedAdd: 0
+  canDoubleChot: 0
+  timeOfCounterAdd: 30
+  duration: 0

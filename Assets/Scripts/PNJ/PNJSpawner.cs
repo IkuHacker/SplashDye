@@ -9,6 +9,8 @@ public class PNJSpawner : MonoBehaviour
     public int maxAgents = 10;            // nombre maximum d'agents
     public Vector3 spawnAreaSize = new Vector3(20, 0, 20); // zone dans laquelle ils apparaissent
 
+    [SerializeField] private GaugesManager gaugesManager;
+ 
     private int currentAgents = 0;
 
     private void Start()
@@ -38,6 +40,7 @@ public class PNJSpawner : MonoBehaviour
 
         GameObject agent = Instantiate(agentPrefab, randomPos, Quaternion.identity);
         currentAgents++;
+        gaugesManager.pnjList.Add(agent);
 
         // Pour réduire le compteur quand un agent meurt ou est détruit
         agent.GetComponent<PNJMovements>().onAgentDestroyed += () => currentAgents--;

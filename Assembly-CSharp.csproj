@@ -51,9 +51,11 @@
     <Compile Include="Assets\Scripts\Player\PlayerMovements.cs" />
     <Compile Include="Assets\Scripts\PNJ\PNJMovements.cs" />
     <Compile Include="Assets\Scripts\PNJ\PNJSpawner.cs" />
+    <Compile Include="Assets\Scripts\Managers\CreditManager.cs" />
     <Compile Include="Assets\Scripts\PNJ\PNJHunger.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInventory.cs" />
     <Compile Include="Assets\Settings\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Managers\TransitionManager.cs" />
     <Compile Include="Assets\Scripts\Managers\GaugesManager.cs" />
     <Compile Include="Assets\Scripts\Managers\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInteractions.cs" />

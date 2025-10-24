@@ -6,9 +6,12 @@ using System.Collections.Generic;
 public class GaugesManager : MonoBehaviour
 {
     [Header("Références")]
-    [SerializeField] private Slider energySlider;
+    [SerializeField] private Slider cultSlider;
     [SerializeField] private Slider foodSlider;
     [SerializeField] private Slider determinationSlider;
+    [SerializeField] private RectTransform DeterminationAnimation;
+    [SerializeField] private RectTransform CultAnimation;
+    [SerializeField] private RectTransform FoodAnimation;
 
     [Header("PNJ")]
     [SerializeField] public List<GameObject> pnjList = new List<GameObject>();
@@ -26,7 +29,12 @@ public class GaugesManager : MonoBehaviour
 
     void Update()
     {
+
         float delta = Time.deltaTime;
+
+        DeterminationAnimation.anchoredPosition = new Vector3(DeterminationAnimation.anchoredPosition.x, 337 * determinationSlider.value -1289, 0);
+        CultAnimation.anchoredPosition = new Vector3(CultAnimation.anchoredPosition.x, 337 * cultSlider.value -1289, 0);
+        FoodAnimation.anchoredPosition = new Vector3(FoodAnimation.anchoredPosition.x, 337 * foodSlider.value -1289, 0);
 
         // Mise à jour dynamique des PNJ affamés
         UpdatePNJHunger();
@@ -42,19 +50,19 @@ public class GaugesManager : MonoBehaviour
         float currentEnergyDecay = energyDecayRate;
         if (foodSlider.value <= 0.5f)
             currentEnergyDecay *= noFoodEnergyMultiplier;
-        energySlider.value -= currentEnergyDecay * delta;
+        cultSlider.value -= currentEnergyDecay * delta;
 
         // --- Détermination ---
         float currentDeterminationDecay = determinationDecayRate;
         if (foodSlider.value <= 0.2f)
             currentDeterminationDecay *= noFoodDeterminationMultiplier;
-        if (energySlider.value <= 0.2f)
+        if (cultSlider.value <= 0.2f)
             currentDeterminationDecay *= noEnergyDeterminationMultiplier;
         determinationSlider.value -= currentDeterminationDecay * delta;
 
         // --- Clamp ---
         foodSlider.value = Mathf.Clamp01(foodSlider.value);
-        energySlider.value = Mathf.Clamp01(energySlider.value);
+        cultSlider.value = Mathf.Clamp01(cultSlider.value);
         determinationSlider.value = Mathf.Clamp01(determinationSlider.value);
 
         // Debug global
@@ -64,7 +72,7 @@ public class GaugesManager : MonoBehaviour
         }
 
         // --- Game Over ---
-        if (energySlider.value <= 0 && foodSlider.value <= 0 && determinationSlider.value <= 0)
+        if (cultSlider.value <= 0 && foodSlider.value <= 0 && determinationSlider.value <= 0)
         {
             Debug.Log("🔥 GAME OVER : Invocation de Baudan le Sâton, malédiction éternelle !");
         }

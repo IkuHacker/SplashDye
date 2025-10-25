@@ -5,28 +5,30 @@ public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] private string sceneName;
     [SerializeField] private string creditSceneName;
-    [SerializeField] private Animator buttonPlayAnimator;
-    [SerializeField] private Animator buttonCreditAnimator;
-
-    [SerializeField] private TransitionManager transitionManager;
-
-
-
+    [SerializeField] private string tutorialSceneName;
 
 
     public void PlayGame()
     {
-        buttonPlayAnimator.CrossFade("Pressed", 0.1f);
-        buttonPlayAnimator.CrossFade("Normal", 0f);
-        transitionManager.LoadTransition(sceneName);
+
+        SceneManager.LoadScene(sceneName);
+
 
     }
 
     public void CreditScene()
     {
-        buttonCreditAnimator.CrossFade("Pressed", 0.1f);
-        buttonCreditAnimator.CrossFade("Normal", 0f);
-        transitionManager.LoadTransition(creditSceneName);
+
+        SceneManager.LoadScene(creditSceneName);
+
+
+    }
+
+    
+    public void TutorialScene()
+    {
+
+        SceneManager.LoadScene(tutorialSceneName);
 
 
     }

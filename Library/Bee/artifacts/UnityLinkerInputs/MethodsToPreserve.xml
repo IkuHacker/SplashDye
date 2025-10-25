@@ -1,0 +1,52 @@
+<linker>
+	<assembly fullname="Assembly-CSharp" ignoreIfMissing="1">
+		<type fullname="CreditManager">
+			<method name="EscapeToCreditScene"/>
+			<method name="EscapeToCreditScene"/>
+			<method name="EscapeToCreditScene"/>
+			<method name="EscapeToCreditScene"/>
+		</type>
+		<type fullname="FunctionManager">
+			<method name="ClickCancel"/>
+			<method name="ClickCult"/>
+			<method name="ClickDetermination"/>
+			<method name="ClickFood"/>
+		</type>
+		<type fullname="GaugesManager">
+			<method name="Ragequit"/>
+			<method name="Replay"/>
+		</type>
+		<type fullname="MainMenuManager">
+			<method name="CreditScene"/>
+			<method name="PlayGame"/>
+			<method name="QuitGame"/>
+			<method name="TutorialScene"/>
+		</type>
+	</assembly>
+	<assembly fullname="Unity.RenderPipelines.Core.Runtime" ignoreIfMissing="1">
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerButton">
+			<method name="OnAction"/>
+		</type>
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerIntField">
+			<method name="OnDecrement"/>
+			<method name="OnDecrement"/>
+			<method name="OnIncrement"/>
+			<method name="OnIncrement"/>
+		</type>
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerObjectPopupField">
+			<method name="OnDecrement"/>
+			<method name="OnIncrement"/>
+		</type>
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerPanel">
+			<method name="OnScrollbarClicked"/>
+			<method name="OnScrollbarClicked"/>
+			<method name="ResetDebugManager"/>
+		</type>
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerUIntField">
+			<method name="OnDecrement"/>
+			<method name="OnDecrement"/>
+			<method name="OnIncrement"/>
+			<method name="OnIncrement"/>
+		</type>
+	</assembly>
+</linker>

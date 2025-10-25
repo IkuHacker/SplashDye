@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using System.Linq;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class GaugesManager : MonoBehaviour
 {
@@ -21,6 +23,12 @@ public class GaugesManager : MonoBehaviour
     [SerializeField] private Image GameOver2;
     [SerializeField] private Image GameOver3;
     [SerializeField] private Image GameOver4;
+
+    [SerializeField] private Image ButtonRagequit;
+    [SerializeField] private Image ButtonReplay;
+
+    [SerializeField] private GameObject TextRagequit;
+    [SerializeField] private GameObject TextReplay;
     public float Speed = 2.5f;
     private bool Active = false;
 
@@ -41,6 +49,8 @@ public class GaugesManager : MonoBehaviour
 
     private void Start()
     {
+        TextRagequit.SetActive(false);
+        TextReplay.SetActive(false);
         RefreshPNJList();
 
         SetAlphaSafe(GameOverBackground, 0f);
@@ -198,24 +208,32 @@ public class GaugesManager : MonoBehaviour
         if (GetTotalPNJs() == 0 && Active)
         {
             FadeInImage(GameOverBackground, delta);
+            FadeInImage(ButtonRagequit, delta);
+            FadeInImage(ButtonReplay, delta);
             FadeInImage(GameOver1, delta);
         }
 
         if (foodSlider.value <= 0f)
         {
             FadeInImage(GameOverBackground, delta);
+            FadeInImage(ButtonRagequit, delta);
+            FadeInImage(ButtonReplay, delta);
             FadeInImage(GameOver2, delta);
         }
 
         if (determinationSlider.value <= 0f)
         {
             FadeInImage(GameOverBackground, delta);
+            FadeInImage(ButtonRagequit, delta);
+            FadeInImage(ButtonReplay, delta);
             FadeInImage(GameOver3, delta);
         }
 
         if (cultSlider.value <= 0f)
         {
             FadeInImage(GameOverBackground, delta);
+            FadeInImage(ButtonRagequit, delta);
+            FadeInImage(ButtonReplay, delta);
             FadeInImage(GameOver4, delta);
         }
     }
@@ -226,6 +244,11 @@ public class GaugesManager : MonoBehaviour
         Color c = img.color;
         c.a = Mathf.Clamp01(c.a + Speed * delta);
         img.color = c;
+        Time.timeScale = 0f;
+        TextRagequit.SetActive(true);
+        TextReplay.SetActive(true);
+
+
     }
 
     private void SetAlphaSafe(Image img, float alpha)
@@ -234,5 +257,17 @@ public class GaugesManager : MonoBehaviour
         Color c = img.color;
         c.a = alpha;
         img.color = c;
+    }
+
+    public void Ragequit()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
+
+    }
+    public void Replay()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("TestScene");
     }
 }

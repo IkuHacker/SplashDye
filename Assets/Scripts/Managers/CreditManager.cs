@@ -27,7 +27,7 @@ public class CreditManager : MonoBehaviour
         // Abonnement à l’événement de clic
         escapeAction.performed += ctx => EscapeToCreditScene();
     }
-    void EscapeToCreditScene()
+    public void EscapeToCreditScene()
     {
         SceneManager.LoadScene(sceneName);
     }

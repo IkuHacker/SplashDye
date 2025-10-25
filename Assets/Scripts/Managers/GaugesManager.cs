@@ -2,13 +2,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using System.Collections.Generic;
+using TMPro;
 
 public class GaugesManager : MonoBehaviour
 {
+    public int Score = 0;
+    private float Timer;
     [Header("Références")]
-    [SerializeField] private Slider cultSlider;
-    [SerializeField] private Slider foodSlider;
-    [SerializeField] private Slider determinationSlider;
+    [SerializeField] public Slider cultSlider;
+    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] public Slider foodSlider;
+    [SerializeField] public Slider determinationSlider;
     [SerializeField] private RectTransform DeterminationAnimation;
     [SerializeField] private RectTransform CultAnimation;
     [SerializeField] private RectTransform FoodAnimation;
@@ -18,28 +22,27 @@ public class GaugesManager : MonoBehaviour
     [SerializeField] private Image GameOver3;
     [SerializeField] private Image GameOver4;
     public float Speed = 2.5f;
+    private bool Active = false;
 
     [Header("PNJ")]
-    private PNJMovements[] allPNJs;
     private Dictionary<string, int> jobCounts = new Dictionary<string, int>();
-    [SerializeField] public List<GameObject> pnjList = new List<GameObject>();
+    public List<GameObject> pnjList = new List<GameObject>();
     private List<GameObject> hungryPNJ = new List<GameObject>();
 
     [Header("Vitesse de descente (par seconde)")]
-    [SerializeField] private float baseFoodDecayRate = 0.005f;
+    [SerializeField] private float baseFoodDecayRate = 0.5f; // pts/s par PNJ
     [SerializeField] private float energyDecayRate = 0.02f;
     [SerializeField] private float determinationDecayRate = 0.005f;
+    [SerializeField] private float maxLossRate = 0.5f; // limite descente max
 
-    [Header("Multiplicateurs")]
-    [SerializeField] private float noFoodEnergyMultiplier = 2f;
-    [SerializeField] private float noFoodDeterminationMultiplier = 1.3f;
-    [SerializeField] private float noEnergyDeterminationMultiplier = 1.5f;
+    [Header("Métiers - Réglages")]
+    [SerializeField] private float cultGaugeSpeed = 0.02f;
+    [SerializeField] private float determinationGaugeSpeed = 0.02f;
 
     private void Start()
     {
-        allPNJs = FindObjectsOfType<PNJMovements>();
-        UpdateJobCounts();
-        // Optionnel : initialiser les alphas des GameOver à 0 si besoin
+        RefreshPNJList();
+
         SetAlphaSafe(GameOverBackground, 0f);
         SetAlphaSafe(GameOver1, 0f);
         SetAlphaSafe(GameOver2, 0f);
@@ -49,127 +52,124 @@ public class GaugesManager : MonoBehaviour
 
     private void Update()
     {
-        UpdateJobCounts(); // met à jour le comptage en live (peut être optimisé si nécessaire)
-
+        Timer += Time.deltaTime;
+        if (Timer >= 1f)
+        {
+            Score += 1000;
+            Timer = 0;
+            scoreText.text = $"Score: {Score}";
+        }
+        RefreshPNJList();
         float delta = Time.deltaTime;
 
-        if (DeterminationAnimation != null)
-            DeterminationAnimation.anchoredPosition = new Vector3(DeterminationAnimation.anchoredPosition.x, 337 * determinationSlider.value - 1289, 0);
-        if (CultAnimation != null)
-            CultAnimation.anchoredPosition = new Vector3(CultAnimation.anchoredPosition.x, 337 * cultSlider.value - 1289, 0);
-        if (FoodAnimation != null)
-            FoodAnimation.anchoredPosition = new Vector3(FoodAnimation.anchoredPosition.x, 337 * foodSlider.value - 1289, 0);
-
+        UpdateSliderAnimations();
         UpdatePNJHunger();
 
-        float hungryPercent = (pnjList.Count > 0) ? (float)hungryPNJ.Count / pnjList.Count : 0f;
+        UpdateFood(delta);
+        UpdateGaugeByPercentage(cultSlider, "Cult", delta, cultGaugeSpeed);
+        UpdateGaugeByPercentage(determinationSlider, "Determination", delta, determinationGaugeSpeed);
 
-        float currentFoodDecay = baseFoodDecayRate * (0.3f + hungryPercent * 2f);
-        if (foodSlider != null) foodSlider.value -= currentFoodDecay * delta;
-
-        float currentEnergyDecay = energyDecayRate;
-        if (foodSlider != null && foodSlider.value <= 0.5f) currentEnergyDecay *= noFoodEnergyMultiplier;
-        if (cultSlider != null) cultSlider.value -= currentEnergyDecay * delta;
-
-        float currentDeterminationDecay = determinationDecayRate;
-        if (foodSlider != null && foodSlider.value <= 0.2f) currentDeterminationDecay *= noFoodDeterminationMultiplier;
-        if (cultSlider != null && cultSlider.value <= 0.2f) currentDeterminationDecay *= noEnergyDeterminationMultiplier;
-        if (determinationSlider != null) determinationSlider.value -= currentDeterminationDecay * delta;
-
-        // Clamp safely
-        if (foodSlider != null) foodSlider.value = Mathf.Clamp01(foodSlider.value);
-        if (cultSlider != null) cultSlider.value = Mathf.Clamp01(cultSlider.value);
-        if (determinationSlider != null) determinationSlider.value = Mathf.Clamp01(determinationSlider.value);
-
-        if (Time.frameCount % 60 == 0)
-            Debug.Log($"🧪 Métiers: {GetTotalPNJs()} PNJs | Jobs = {string.Join(", ", jobCounts.Select(kvp => $"{kvp.Key}:{kvp.Value}"))}");
-
-        // --- Game Over checks : fade les images correspondantes + background ---
-        // Cult (GameOver4)
-        if (cultSlider != null && cultSlider.value <= 0f)
-        {
-            FadeInImage(GameOverBackground, delta);
-            FadeInImage(GameOver4, delta);
-        }
-        // Food (GameOver2)
-        if (foodSlider != null && foodSlider.value <= 0f)
-        {
-            FadeInImage(GameOverBackground, delta);
-            FadeInImage(GameOver2, delta);
-        }
-        // Determination (GameOver3)
-        if (determinationSlider != null && determinationSlider.value <= 0f)
-        {
-            FadeInImage(GameOverBackground, delta);
-            FadeInImage(GameOver3, delta);
-        }
-        // No PNJ (GameOver1)
-        if (GetTotalPNJs() == 0)
-        {
-            FadeInImage(GameOverBackground, delta);
-            FadeInImage(GameOver1, delta);
-        }
+        ClampSliders();
+        CheckGameOver(delta);
     }
 
-    private void UpdateJobCounts()
+    // ──────────────────────────────────────────────
+    // PNJ MANAGEMENT
+    // ──────────────────────────────────────────────
+    private void RefreshPNJList()
     {
-        // refresh list of PNJs (si tu veux l'optimiser, gère via un manager de spawn)
-        allPNJs = FindObjectsOfType<PNJMovements>();
-
+        pnjList.RemoveAll(p => p == null);
         jobCounts.Clear();
-        foreach (var pnj in allPNJs)
+
+        foreach (var pnj in pnjList)
         {
             if (pnj == null) continue;
-            string job = pnj.Job ?? "None";
+            PNJMovements mov = pnj.GetComponent<PNJMovements>();
+            string job = mov != null ? mov.Job : "None";
+
             if (!jobCounts.ContainsKey(job)) jobCounts[job] = 0;
             jobCounts[job]++;
         }
     }
 
-    private void FadeInImage(Image img, float delta)
+    private int GetJobCount(string job)
     {
-        if (img == null) return;
-        Color c = img.color;
-        c.a = Mathf.Clamp01(c.a + Speed * delta);
-        img.color = c;
+        return jobCounts.ContainsKey(job) ? jobCounts[job] : 0;
     }
 
-    // sécurité pour initialiser alpha
-    private void SetAlphaSafe(Image img, float alpha)
+    private float GetJobPercentage(string job)
     {
-        if (img == null) return;
-        Color c = img.color;
-        c.a = Mathf.Clamp01(alpha);
-        img.color = c;
+        if (pnjList.Count == 0) return 0f;
+        return (float)GetJobCount(job) / pnjList.Count;
     }
 
     public int GetTotalPNJs()
     {
-        return jobCounts.Values.Sum();
+        return pnjList.Count;
     }
 
-    void UpdatePNJHunger()
+    // ──────────────────────────────────────────────
+    // JAUJES DYNAMIQUES
+    // ──────────────────────────────────────────────
+    private void UpdateFood(float delta)
     {
-        if (pnjList == null || pnjList.Count == 0)
-            return;
+        float decay = baseFoodDecayRate * pnjList.Count;
+        if (decay > maxLossRate) decay = maxLossRate;
+        foodSlider.value -= decay * delta;
+    }
 
-        pnjList.RemoveAll(p => p == null);
+    private void UpdateGaugeByPercentage(Slider slider, string job, float delta, float gaugeSpeed)
+    {
+        float pct = GetJobPercentage(job);
+
+        // change = 0 si 50%, positif si >50%, négatif si <50%
+        float change = (pct - 0.5f) * 2f * gaugeSpeed;
+
+        // limiter la descente
+        if (change < -maxLossRate) change = -maxLossRate;
+
+        slider.value += change * delta;
+    }
+
+    private void ClampSliders()
+    {
+        foodSlider.value = Mathf.Clamp01(foodSlider.value);
+        cultSlider.value = Mathf.Clamp01(cultSlider.value);
+        determinationSlider.value = Mathf.Clamp01(determinationSlider.value);
+    }
+
+    private void UpdateSliderAnimations()
+    {
+        if (DeterminationAnimation)
+            DeterminationAnimation.anchoredPosition = new Vector3(DeterminationAnimation.anchoredPosition.x, 337 * determinationSlider.value - 1289, 0);
+        if (CultAnimation)
+            CultAnimation.anchoredPosition = new Vector3(CultAnimation.anchoredPosition.x, 337 * cultSlider.value - 1289, 0);
+        if (FoodAnimation)
+            FoodAnimation.anchoredPosition = new Vector3(FoodAnimation.anchoredPosition.x, 337 * foodSlider.value - 1289, 0);
+    }
+
+    // ──────────────────────────────────────────────
+    // FAIM
+    // ──────────────────────────────────────────────
+    private void UpdatePNJHunger()
+    {
+        if (pnjList.Count == 0) return;
+
         hungryPNJ.RemoveAll(p => p == null);
 
-        float foodPercent = (foodSlider != null) ? foodSlider.value : 1f;
-        int targetHungryCount = Mathf.RoundToInt(pnjList.Count * (1f - foodPercent));
+        float targetHungry = pnjList.Count * (1f - foodSlider.value);
 
-        if (hungryPNJ.Count >= targetHungryCount)
-            return;
+        if (hungryPNJ.Count >= targetHungry) return;
 
-        int toAdd = targetHungryCount - hungryPNJ.Count;
+        int toAdd = Mathf.RoundToInt(targetHungry - hungryPNJ.Count);
+
         var candidates = pnjList.Except(hungryPNJ)
                                 .OrderBy(x => Random.value)
                                 .Take(toAdd);
 
         foreach (var pnj in candidates)
         {
-            PNJHunger hunger = pnj.GetComponent<PNJHunger>();
+            var hunger = pnj.GetComponent<PNJHunger>();
             if (hunger != null)
             {
                 hunger.ActiveHunger();
@@ -180,13 +180,59 @@ public class GaugesManager : MonoBehaviour
 
     public void ModifyFood(float amount)
     {
-        if (foodSlider == null) return;
         foodSlider.value = Mathf.Clamp01(foodSlider.value + amount);
     }
 
     public void RemoveFromHungryList(GameObject pnj)
     {
-        if (hungryPNJ.Contains(pnj))
-            hungryPNJ.Remove(pnj);
+        hungryPNJ.Remove(pnj);
+    }
+
+    // ──────────────────────────────────────────────
+    // GAME OVER
+    // ──────────────────────────────────────────────
+    private void CheckGameOver(float delta)
+    {
+        if (GetTotalPNJs() > 0) Active = true;
+
+        if (GetTotalPNJs() == 0 && Active)
+        {
+            FadeInImage(GameOverBackground, delta);
+            FadeInImage(GameOver1, delta);
+        }
+
+        if (foodSlider.value <= 0f)
+        {
+            FadeInImage(GameOverBackground, delta);
+            FadeInImage(GameOver2, delta);
+        }
+
+        if (determinationSlider.value <= 0f)
+        {
+            FadeInImage(GameOverBackground, delta);
+            FadeInImage(GameOver3, delta);
+        }
+
+        if (cultSlider.value <= 0f)
+        {
+            FadeInImage(GameOverBackground, delta);
+            FadeInImage(GameOver4, delta);
+        }
+    }
+
+    private void FadeInImage(Image img, float delta)
+    {
+        if (!img) return;
+        Color c = img.color;
+        c.a = Mathf.Clamp01(c.a + Speed * delta);
+        img.color = c;
+    }
+
+    private void SetAlphaSafe(Image img, float alpha)
+    {
+        if (!img) return;
+        Color c = img.color;
+        c.a = alpha;
+        img.color = c;
     }
 }

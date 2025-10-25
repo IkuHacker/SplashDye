@@ -37,7 +37,24 @@ public class PNJHunger : MonoBehaviour
         Debug.Log($"😌 {name} est rassasié.");
 
         if (gaugesManager != null)
+        {
             gaugesManager.RemoveFromHungryList(gameObject);
+
+            // Augmente la jauge de nourriture de 10%
+            StartCoroutine(ApplyFoodBonus(0.1f));
+        }
+    }
+
+    private IEnumerator ApplyFoodBonus(float amount)
+    {
+        // On peut ajouter un petit délai si besoin, ici c'est instantané
+        yield return null;
+        if (gaugesManager != null)
+        {
+            gaugesManager.ModifyFood(amount);
+            // S'assure que la barre ne dépasse pas 100%
+            gaugesManager.foodSlider.value = Mathf.Clamp01(gaugesManager.foodSlider.value);
+        }
     }
 
     public void DesactiveHungerTemporarily(float duration)

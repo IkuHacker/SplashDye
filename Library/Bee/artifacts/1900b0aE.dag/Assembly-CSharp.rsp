@@ -493,6 +493,7 @@
 "Assets/Scripts/Managers/GaugesManager.cs"
 "Assets/Scripts/Managers/MainMenuManager.cs"
 "Assets/Scripts/Managers/MainMenuManager1.cs"
+"Assets/Scripts/Managers/MusicManager.cs"
 "Assets/Scripts/Managers/SmoothGui.cs"
 "Assets/Scripts/Managers/TransitionManager.cs"
 "Assets/Scripts/Player/PlayerInteractions.cs"
@@ -502,6 +503,7 @@
 "Assets/Scripts/PNJ/PNJHunger.cs"
 "Assets/Scripts/PNJ/PNJMovements.cs"
 "Assets/Scripts/PNJ/PNJSpawner.cs"
+"Assets/Scripts/Screamer.cs"
 "Assets/Settings/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0
 /deterministic

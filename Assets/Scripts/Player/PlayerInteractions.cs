@@ -14,6 +14,9 @@ public class PlayerInteractions : MonoBehaviour
     private InputAction interactAction;
 
     public GaugesManager gaugesManager;
+    public GameObject MetierMenu;
+    public GameObject Knot;
+    public FunctionManager Jobs;
 
 
     void Awake()
@@ -48,6 +51,7 @@ public class PlayerInteractions : MonoBehaviour
     void FireRaycast()
     {
         if (mainCam == null) return;
+        if (MetierMenu.activeSelf) return;
 
         Debug.Log("🧍 Le joueur a intéragis!");
 
@@ -62,6 +66,8 @@ public class PlayerInteractions : MonoBehaviour
 
             if (layerName == "PNJ")
             {
+                print("Un PNJ a été touché");
+
                 if (playerInventory.hasABurger)
                 {
                     playerInventory.ActiverBurger(false);
@@ -76,7 +82,13 @@ public class PlayerInteractions : MonoBehaviour
                     {
                         hunger.DesactiveHungerTemporarily(10f);
                     }
-
+                }
+                else
+                {
+                    Jobs.Hit = hitObject;
+                    Time.timeScale = 0.003f;
+                    MetierMenu.SetActive(true);
+                    Knot.SetActive(false);
                 }
 
                 playerInventory.ActiverBurger(false);
@@ -85,6 +97,10 @@ public class PlayerInteractions : MonoBehaviour
             else if (layerName == "Cooker")
             {
                 playerInventory.ActiverBurger(true);
+            }
+            else if (layerName == "Fire")
+            {
+                Destroy(hitObject);
             }
         }
         else

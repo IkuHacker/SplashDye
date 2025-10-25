@@ -16,6 +16,8 @@ public class PlayerLook : MonoBehaviour
     private float xRotation;
     private float yRotation;
 
+    public GameObject MetierMenu;
+
     private void Awake()
     {
         inputActions = new PlayerInputActions();
@@ -33,19 +35,23 @@ public class PlayerLook : MonoBehaviour
 
     private void Update()
     {
-        // Lis la valeur de l'action "Look" (Vector2)
-        lookInput = inputActions.Player.Look.ReadValue<Vector2>();
+        if (MetierMenu.activeSelf == false)
+        {
+            // Lis la valeur de l'action "Look" (Vector2)
+            lookInput = inputActions.Player.Look.ReadValue<Vector2>();
 
-        // Calcul de la rotation
-        float mouseX = lookInput.x * sensX;
-        float mouseY = lookInput.y * sensY;
+            // Calcul de la rotation
+            float mouseX = lookInput.x * sensX;
+            float mouseY = lookInput.y * sensY;
 
-        yRotation += mouseX;
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
+            yRotation += mouseX;
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
-        // Applique à la caméra
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0, 0);
-        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+            // Applique à la caméra
+            playerCamera.localRotation = Quaternion.Euler(xRotation, 0, 0);
+            orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+        }
+
     }
 }

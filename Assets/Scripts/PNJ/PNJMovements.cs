@@ -12,6 +12,25 @@ public class PNJMovements : MonoBehaviour
     public float stopDistance = 0.5f;
     public float rotationSpeed = 5f;
     public bool flipSprite = true; // active/désactive le flip automatique
+    public string Job = "None";
+    private Vector3[] CultPositions = new Vector3[]
+    {
+    new Vector3(-4.3f, 1f, -0.7f),
+    new Vector3(-4f, 1f, -2.7f),
+    new Vector3(-1.9f, 1f, -3.7f),
+    new Vector3(0.3f, 1f, -3f),
+    new Vector3(-1f, 1f, -1.1f),
+    new Vector3(0.3f, 1f, 0.6f),
+    new Vector3(-1.7f, 1f, 1.5f),
+    new Vector3(-3.4f, 1f, 1f)
+    };
+
+    private Vector3[] DeterminationPositions = new Vector3[]
+    {
+    new Vector3(7.8f, 1f, -4.5f),
+    new Vector3(6.3f, 1f, -7.3f),
+    new Vector3(4.5f, 1f, -10.3f)
+    };
 
     public Animator animBack;
     private Animator anim;
@@ -39,14 +58,23 @@ public class PNJMovements : MonoBehaviour
     {
         while (true)
         {
-            // Nouvelle destination aléatoire
-            Vector3 randomDirection = new Vector3(
+            if (Job == "Cult")
+            {
+                targetPosition = CultPositions[UnityEngine.Random.Range(0, CultPositions.Length)];
+            }
+            else if (Job == "Determination")
+            {
+                targetPosition = DeterminationPositions[UnityEngine.Random.Range(0, DeterminationPositions.Length)];
+            }
+            else
+            {
+                // Nouvelle destination aléatoire
+                Vector3 randomDirection = new Vector3(
                 UnityEngine.Random.Range(-wanderRadius, wanderRadius),
                 0,
-                UnityEngine.Random.Range(-wanderRadius, wanderRadius)
-            );
-
-            targetPosition = transform.position + randomDirection;
+                UnityEngine.Random.Range(-wanderRadius, wanderRadius));
+                targetPosition = transform.position + randomDirection;
+            }
             yield return new WaitForSeconds(changeTargetInterval);
         }
     }

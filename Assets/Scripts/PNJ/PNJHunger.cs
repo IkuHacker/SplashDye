@@ -4,6 +4,8 @@ using System.Collections;
 public class PNJHunger : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer hungerIcon;
+    [SerializeField] public SpriteRenderer CultIcon;
+    [SerializeField] public SpriteRenderer DeterminationIcon;
     private bool isHunger;
     private bool hungerBlocked;
 
@@ -21,6 +23,8 @@ public class PNJHunger : MonoBehaviour
 
         isHunger = true;
         hungerIcon.enabled = true;
+        CultIcon.enabled = false;
+        DeterminationIcon.enabled = false;
         Debug.Log($"😩 {name} a faim !");
     }
 

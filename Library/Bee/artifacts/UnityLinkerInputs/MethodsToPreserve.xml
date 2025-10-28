@@ -6,12 +6,6 @@
 			<method name="EscapeToCreditScene"/>
 			<method name="EscapeToCreditScene"/>
 		</type>
-		<type fullname="FunctionManager">
-			<method name="ClickCancel"/>
-			<method name="ClickCult"/>
-			<method name="ClickDetermination"/>
-			<method name="ClickFood"/>
-		</type>
 		<type fullname="GaugesManager">
 			<method name="Ragequit"/>
 			<method name="Replay"/>

@@ -23,6 +23,7 @@ public class GaugesManager : MonoBehaviour
     [SerializeField] private Image GameOver2;
     [SerializeField] private Image GameOver3;
     [SerializeField] private Image GameOver4;
+    private bool gameIsOver = false;
 
     [SerializeField] private Image ButtonRagequit;
     [SerializeField] private Image ButtonReplay;
@@ -203,37 +204,27 @@ public class GaugesManager : MonoBehaviour
     // ──────────────────────────────────────────────
     private void CheckGameOver(float delta)
     {
-        if (GetTotalPNJs() > 0) Active = true;
+        if (gameIsOver) return;
 
-        if (GetTotalPNJs() == 0 && Active)
+        if (GetTotalPNJs() == 0 && Active ||
+            foodSlider.value <= 0f ||
+            determinationSlider.value <= 0f ||
+            cultSlider.value <= 0f)
+        {
+            gameIsOver = true;
+            Time.timeScale = 0f; // ✅ ON BLOQUE ICI UNE SEULE FOIS
+            TextRagequit.SetActive(true);
+            TextReplay.SetActive(true);
+        }
+
+        if (gameIsOver)
         {
             FadeInImage(GameOverBackground, delta);
             FadeInImage(ButtonRagequit, delta);
             FadeInImage(ButtonReplay, delta);
             FadeInImage(GameOver1, delta);
-        }
-
-        if (foodSlider.value <= 0f)
-        {
-            FadeInImage(GameOverBackground, delta);
-            FadeInImage(ButtonRagequit, delta);
-            FadeInImage(ButtonReplay, delta);
             FadeInImage(GameOver2, delta);
-        }
-
-        if (determinationSlider.value <= 0f)
-        {
-            FadeInImage(GameOverBackground, delta);
-            FadeInImage(ButtonRagequit, delta);
-            FadeInImage(ButtonReplay, delta);
             FadeInImage(GameOver3, delta);
-        }
-
-        if (cultSlider.value <= 0f)
-        {
-            FadeInImage(GameOverBackground, delta);
-            FadeInImage(ButtonRagequit, delta);
-            FadeInImage(ButtonReplay, delta);
             FadeInImage(GameOver4, delta);
         }
     }
@@ -241,15 +232,22 @@ public class GaugesManager : MonoBehaviour
     private void FadeInImage(Image img, float delta)
     {
         if (!img) return;
+
         Color c = img.color;
-        c.a = Mathf.Clamp01(c.a + Speed * delta);
+
+        // Ajout de l'opacity
+        c.a += Speed * delta;
+        c.a = Mathf.Clamp01(c.a + Speed * Time.unscaledDeltaTime);
         img.color = c;
-        Time.timeScale = 0f;
-        TextRagequit.SetActive(true);
-        TextReplay.SetActive(true);
 
-
+        // Si l'opacité est arrivée à 1 -> on freeze le jeu
+        if (c.a >= 1f)
+        {
+            TextRagequit.SetActive(true);
+            TextReplay.SetActive(true);
+        }
     }
+
 
     private void SetAlphaSafe(Image img, float alpha)
     {

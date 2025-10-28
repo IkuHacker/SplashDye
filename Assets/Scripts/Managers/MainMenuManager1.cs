@@ -10,7 +10,8 @@ public class MainMenuManager1 : MonoBehaviour
 
     void Update()
     {
-        if (Mouse.current.position.ReadValue().x > 140 && Mouse.current.position.ReadValue().x < 720 && Mouse.current.position.ReadValue().y > 430 && Mouse.current.position.ReadValue().y < 640)
+        print(Mouse.current.position.ReadValue());
+        if (Mouse.current.position.ReadValue().x > 140 && Mouse.current.position.ReadValue().x < 720 && Mouse.current.position.ReadValue().y > 360 && Mouse.current.position.ReadValue().y < 850)
         {
             if (PlayButton.color.a < 1){PlayButton.color = new Color(1, 1, 1, PlayButton.color.a + Speed * Time.deltaTime);}
         }
@@ -18,7 +19,7 @@ public class MainMenuManager1 : MonoBehaviour
         {
             if (PlayButton.color.a > 0){PlayButton.color = new Color(1, 1, 1, PlayButton.color.a - Speed * 2 * Time.deltaTime);}
         }
-        if (Mouse.current.position.ReadValue().x > 1220 && Mouse.current.position.ReadValue().x < 1750 && Mouse.current.position.ReadValue().y > 430 && Mouse.current.position.ReadValue().y < 640)
+        if (Mouse.current.position.ReadValue().x > 1220 && Mouse.current.position.ReadValue().x < 1750 && Mouse.current.position.ReadValue().y > 360 && Mouse.current.position.ReadValue().y < 850)
         {
             if (QuitButton.color.a < 1){QuitButton.color = new Color(1, 1, 1, QuitButton.color.a + Speed * Time.deltaTime);}
         }
